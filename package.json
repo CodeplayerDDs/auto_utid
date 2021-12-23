@@ -10,14 +10,19 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:auto-testga-anchor.helloWorld"
+    "onCommand:auto-test.helloWorld",
+    "onCommand:auto-test.create utid"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "auto-testga-anchor.helloWorld",
+        "command": "auto-test.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "auto-test.create utid",
+        "title": "create utid"
       }
     ]
   },

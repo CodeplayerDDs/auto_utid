@@ -1,26 +1,51 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import type { Position } from "vscode";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+import * as vscode from "vscode";
+
+import * as path from "path";
+
+const rootName = "root";
+
 export function activate(context: vscode.ExtensionContext) {
-	
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "auto-testga-anchor" is now active!');
+  console.log('"auto-test" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('auto-testga-anchor.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from auto_utid!');
-	});
+  const myDisposable = vscode.commands.registerCommand(
+    "auto-test.create utid",
+    () => {
+      const {
+        activeTextEditor, //当前编辑页
+      } = vscode.window;
 
-	context.subscriptions.push(disposable);
+      activeTextEditor?.edit(async (editBuilder) => {
+        const fileNamePrefix = getFileNamePrefix(
+          activeTextEditor.document.fileName
+        );
+
+        //获取光标位置
+        const position = new vscode.Position(
+          activeTextEditor.selection.active.line,
+          activeTextEditor.selection.active.character
+        );
+
+        //在光标位置插入字符串
+        editBuilder.insert(
+          position,
+          ` utid="${fileNamePrefix}-${new Date().getTime()}"`
+        );
+      });
+    }
+  );
+
+  context.subscriptions.push(myDisposable);
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+function getFileNamePrefix(p: string): string {
+  const format = path.parse(p);
+
+  return `${format.dir.split(path.sep).pop() || rootName}-${format.name}`;
+}
